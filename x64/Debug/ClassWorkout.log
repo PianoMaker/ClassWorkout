@@ -1,10 +1,10 @@
-﻿  ClassWorkout.cpp
-H:\source\ClassWorkout\ClassWorkout\ClassWorkout.cpp(180,32): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
-H:\source\ClassWorkout\ClassWorkout\ClassWorkout.cpp(181,29): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
-H:\source\ClassWorkout\ClassWorkout\ClassWorkout.cpp(182,24): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
-H:\source\ClassWorkout\ClassWorkout\ClassWorkout.cpp(309,18): warning C4101: 'choice': unreferenced local variable
-H:\source\ClassWorkout\ClassWorkout\ClassWorkout.cpp(308,7): warning C4101: 'index': unreferenced local variable
-H:\source\ClassWorkout\ClassWorkout\ClassWorkout.cpp(336,18): warning C4101: 'choice': unreferenced local variable
-H:\source\ClassWorkout\ClassWorkout\ClassWorkout.cpp(450,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-H:\source\ClassWorkout\ClassWorkout\ClassWorkout.cpp(482,4): warning C4102: 'defalult': unreferenced label
+﻿  Student.cpp
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(149,40): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(150,37): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(151,32): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(188,53): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(189,59): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(190,49): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(191,70): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(296,17): warning C4101: 'choice': unreferenced local variable
   ClassWorkout.vcxproj -> H:\source\ClassWorkout\x64\Debug\ClassWorkout.exe
