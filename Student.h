@@ -1,32 +1,36 @@
 ﻿// Student.h
 #ifndef STUDENT_H
 #define STUDENT_H
+
+extern int IDCounter;
+
 class Student
 {
 private:
-	int lessons; // місяці навання
+	int ID; // ідентифікатор
+	int lessons; // пройдені уроки за які виставляються оцінки
 	char name[30];
 	char surname[30];
 	char gender;
 	char faculty[30];
 	int admission_year;
-	int* c_prog = new int[lessons]; // оцінки помісячно
+	int* c_prog = new int[lessons]; // оцінки за кожен урок
 	int* hardware = new int[lessons];
 	int* uml = new int[lessons];
-	float ave_prog;
+	float ave_prog; // середні оцінки
 	float ave_hardware;
 	float ave_uml;
 	float ave_global;
 
 public:
 	
-	Student(int lessons = 0); // конструктор за замовченням
+	Student(); // конструктор за замовченням
 	// конструктор з усіма параметрами
 	Student(int lessons, char* name, char* surname, char* faculty, int admission_year, int* c_prog, int* hardware, int* uml);
-	/*
+	
 	Student(const Student& obj);// копіювання
 	~Student();// деструктор;
-	*/
+	
 
 	// іменний сеттер 
 	void SetName(char* name, char* surname);
@@ -60,9 +64,11 @@ public:
 
 	/* Виведення на екран */
 
-	void Show(int index = 0);
+	void Show(int index = 0);// для моделі в один екземпляр
+	void Show(Student* students, int size); // показати весь список
+	void Show(Student* students, int size, int ID_min, int ID_max); // показати діапазон в заданих межах
 	void ShowMarks(int index = 0);
-	void Show(Student* students, int size);
+	
 
 	/* створення екземплярів з випадковими параметрами */
 
@@ -76,10 +82,17 @@ public:
 
 	// Сортування
 	void Sort(Student*& students, int size);
+	void SortByID(Student*& students, int size);
 	void SwapStudents(Student* students, int index1, int index2);
+	void SortBySurname(Student*& students, int size);
 
 	// очищення оцінок
 	void ResetMarks();
+
+	// пошук
+	void SearchByName(Student*& students, int size, char* name);
+	void SearchByMarks(Student*& students, int size, float mark);
+	void SearchByID(Student*& students, int size, int ID);
 
 	// додавання і вилучення
 	void Add(Student*& students, int& size);

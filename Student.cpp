@@ -1,23 +1,46 @@
-﻿#include "Student.h"
+﻿//student.cpp
+#include "Student.h"
 #include "globals.h"
 
 #pragma warning (disable:4996)
-#define HEADER cout << "#\tName\t\tSurname\t\tGener\tFaculty\t\tAdm.Year\tC++\tHardw.\tUML.\t global\n";
+#define HEADER cout << "#\tID\tName\t\tSurname\t\tGender\tFaculty\t\tAdm.Year\tC++\tHardw.\tUML.\t global\n";
+#define ROWS cout << setw(log10(size) + 1) << i + 1 << "\t"\
+<< setfill('0')\
+<< setw(log10(size) + 1) << students[i].ID << "\t"\
+<< left << setfill(' ')\
+<< setw(12) << students[i].name << "\t" \
+<< setw(12) << students[i].surname << "\t"\
+<< setw(1) << students[i].gender << "\t"\
+<< setw(12) << students[i].faculty << "\t"\
+<< setw(5) << students[i].admission_year << "\t\t"\
+<< right\
+<< setw(2) << students[i].ave_prog << "\t"\
+<< setw(2) << students[i].ave_hardware << "\t"\
+<< setw(2) << students[i].ave_uml << "\t"\
+<< setw(2) << students[i].ave_global << "\n";
+
+
 
 using namespace std;
 
 
-Student::Student(int lessons) : lessons(lessons)
+
+Student::Student(): lessons(0)
+
 {
+	ID = ++IDCounter;
 	strcpy(name, "Unknown");
 	strcpy(surname, "Unknown");
 	strcpy(faculty, "Unknown");
+	gender = '?';
 	admission_year = 2023;
 	CountAverage();
 }
+
 // конструктор з усіма параметрами
 Student::Student(int lessons, char* name, char* surname, char* faculty, int admission_year, int* c_prog, int* hardware, int* uml)
 {
+	//ID = ++IDCounter;
 	this->lessons = lessons;
 	strcpy(this->name, name);
 	strcpy(this->surname, surname);
@@ -32,9 +55,10 @@ Student::Student(int lessons, char* name, char* surname, char* faculty, int admi
 	ave_prog = Average(c_prog, lessons);
 	ave_hardware = Average(hardware, lessons);
 }
-/*
+/**/
 Student::Student(const Student& obj)// копіювання
 {
+	this->ID = obj.ID;
 	this->lessons = obj.lessons;
 	strcpy(this->name, obj.name);
 	strcpy(this->surname, obj.surname);
@@ -50,11 +74,12 @@ Student::Student(const Student& obj)// копіювання
 }
 Student::~Student()// деструктор
 {
-	delete[] c_prog;
-	delete[] hardware;
-	delete[] uml;
+	//delete[] c_prog; // глюкає при сортуванні !!!
+	//delete[] hardware;
+	//delete[] uml;
 }
-*/
+
+
 
 
 // іменний сеттер 
@@ -98,6 +123,7 @@ void Student::SetMarks(int c_prog, int hardware, int uml)
 	this->uml = temp3;
 
 	lessons++;
+	CountAverage();
 	//delete temp3;
 }
 
@@ -135,6 +161,7 @@ void Student::EditMarks(int index)
 					uml[i] = Entervalue("", bestmark);
 				}
 			}
+			CountAverage();
 		}
 		else cout << Message(12, "Wrong password, nothing has been edited");
 	}
@@ -169,6 +196,7 @@ void Student::Fill(Student* students, int size)
 			CINIGNORE; students[i].c_prog[j] = Entervalue("C++ programming:\n", bestmark);
 			CINIGNORE; students[i].hardware[j] = Entervalue("Hardware:\n", bestmark);
 			CINIGNORE; students[i].uml[j] = Entervalue("Windows configuration:\n", bestmark);
+			CountAverage();
 		}
 	}
 }
@@ -195,22 +223,7 @@ void Student::CountAverage() // рахує середнє з округленн�
 
 /* Виведення на екран */
 
-void Student::Show(int index) // для одного студента
-{
-	HEADER;
-	CountAverage();
-	cout << setw(150) << setfill('_') << " \n";
-	cout << "1\t" << setfill(' ')
-		<< setw(12) << name << "\t\t"
-		<< setw(12) << surname << "\t\t"
-		<< setw(1) << gender << "\t"
-		<< setw(12) << faculty << "\t\t"
-		<< setw(5) << admission_year << "\t\t"
-		<< setw(2) << ave_prog << "\t"
-		<< setw(2) << ave_hardware << "\t"
-		<< setw(2) << ave_uml << "\t"
-		<< setw(2) << ave_global << "\n";
-}
+
 
 void Student::ShowMarks(int index) // для одного студента
 {
@@ -236,28 +249,48 @@ void Student::ShowMarks(int index) // для одного студента
 	cout << "\t Average: " << ave_uml;
 }
 
+
+void Student::Show(int index) // для одного студента
+{
+	HEADER;
+	CountAverage();
+	cout << setw(150) << setfill('_') << " \n";
+	cout << "1\t" << setfill(' ')
+		<< setw(2) << ID << "\t"
+		<< setw(12) << name << "\t\t"
+		<< setw(12) << surname << "\t\t"
+		<< setw(1) << gender << "\t"
+		<< setw(12) << faculty << "\t\t"
+		<< setw(5) << admission_year << "\t\t"
+		<< setw(2) << ave_prog << "\t"
+		<< setw(2) << ave_hardware << "\t"
+		<< setw(2) << ave_uml << "\t"
+		<< setw(2) << ave_global << "\n";
+}
+
 void Student::Show(Student* students, int size)//для групи студентів
 {
 	HEADER;
-	cout << setw(80) << setfill('_') << " \n";
+	cout << setw(120) << setfill('_') << " \n";
 	for (int i = 0; i < size; i++)
 	{
 		students[i].CountAverage();
-		cout << i + 1 << "\t"
-			<< left <<  setfill(' ')
-			<< setw(12) << students[i].name << "\t"
-			<< setw(12) << students[i].surname << "\t"
-			<< setw(1) << students[i].gender << "\t"
-			<< setw(12) << students[i].faculty << "\t"
-			<< setw(5) << students[i].admission_year << "\t\t"
-			<< right 
-			<< setw(2) << students[i].ave_prog << "\t"
-			<< setw(2) << students[i].ave_hardware << "\t"
-			<< setw(2) << students[i].ave_uml << "\t"
-			<< setw(2) << students[i].ave_global << "\n";
-
+			ROWS
 	}
 }
+
+
+void Student::Show(Student* students, int size, int ID_min, int ID_max)//для групи студентів
+{
+	HEADER;
+	cout << setw(80) << setfill('_') << " \n";
+	for (int i = ID_min; i <= ID_max; i++)
+	{
+		students[i].CountAverage();
+		ROWS
+	}
+}
+
 
 /* створення екземплярів з випадковими параметрами */
 
@@ -271,11 +304,11 @@ void Student::RandSurnames()
 
 void Student::RandNames()
 {
-	int const numberofnames = 22;
-	char name[numberofnames][10] = { "Ivan", "Dmytro", "Petro", "Pavlo", "Mykola", "Volodymyr", "Danylo", "Stepan", "Fedir", "Oksana", "Ivanka", "Olena", "Kateryna", "Olha", "Karina", "Myroslava", "Anna", "Orysia", "Nadia", "Natalie", "Alina", "Sofia"};
+	int const numberofnames = 26;
+	char name[numberofnames][10] = { "Ivan", "Dmytro", "Petro", "Pavlo", "Mykola", "Volodymyr", "Danylo", "Stepan", "Fedir", "Andriy", "Maxym", /*12*/ "Oksana", "Ivanka", "Olena", "Kateryna", "Olha", "Karina", "Myroslava", "Anna", "Orysia", "Nadia", "Natalie", "Alina", "Sofia", "Ella", "Alla"};
 	int random = rand() % numberofnames;
 	strcpy(this->name, name[random]);
-	if (random < 9) gender = 'm';
+	if (random < 12) gender = 'm';
 	else gender = 'f';	
 }
 
@@ -341,35 +374,53 @@ void Student::ResetMarks()
 	delete[] c_prog;
 	delete[] hardware;
 	delete[] uml;
+	CountAverage();
 }
 
 
 void Student::Add(Student*& students, int& size)
 {
 	Student* temp = new Student[size + 1];
+	IDCounter--;
 	for (int i = 0; i < size; i++)
+	{
 		temp[i] = students[i];
+		IDCounter--;
+	}
 
 	temp[size] = Student();
 
-	//delete[] students; // Видалення попереднього масиву
-	students = temp;   // Перенаправлення вказівника на новий масив
-	size++;            // Збільшення розміру масиву на 1
+	//delete[] students; // Видалення попереднього масиву спричиняє помилку. ЧОМУ???
+	students = temp;   
+	size++;            
 }
 
 void Student::Delete(Student*& students, int& size, int index)
 {
-	index--;
-	Student* temp = new Student[size - 1];
-	for (int i = 0; i < index; i++)
-		temp[i] = students[i];
-	for (int i = index; i < size; i++)
-		temp[i] = students[i + 1];
+	cout << "\nIDCounter before= " << IDCounter;
+	index--; 
 
-	//delete[] students; // Видалення попереднього масиву
-	students = temp;   // Перенаправлення вказівника на новий масив
-	size--;            // Збільшення розміру масиву на 1
+	Student* temp = new Student[size - 1];
+	for (int i = 0; i < size - 1; i++)
+	IDCounter--;// запобігання зростанню ID. Костильне програмування, але нічого іншого не виходить!!!
+
+	cout << "\nIDCounter after = " << IDCounter;
+
+	for (int i = 0; i < index; i++)
+	{
+		temp[i] = students[i];
+	}
+
+	for (int i = index + 1; i < size; i++) 
+	{
+		temp[i - 1] = students[i];
+	}
+
+	//delete[] students; // Видалення спричиняє помилку. ЧОМУ????
+	students = temp;   
+	size--; 
 }
+
 
 
 void Student::SwapStudents(Student* students, int index1, int index2) {
@@ -386,32 +437,116 @@ void Student::Sort(Student*& students, int size)
 				SwapStudents(students, i - 1, i);
 }
 
+void Student::SortByID(Student*& students, int size)
+{
+	for (int j = 0; j < size; j++)
+		for (int i = 1; i < size; i++)
+			if (students[i - 1].ID > students[i].ID)
+				SwapStudents(students, i - 1, i);
+}
+
+void Student::SortBySurname(Student*& students, int size)
+{
+	for (int j = 0; j < size; j++)
+		for (int i = 1; i < size; i++)
+			if (strcmp(students[i - 1].surname, students[i].surname) > 0)
+				SwapStudents(students, i - 1, i);
+}
+
+void Student::SearchByName(Student*& students, int size, char* name)
+{
+	bool found = false;
+	HEADER
+		cout << setw(80) << setfill('_') << " \n";
+	for (int i = 0; i < size; i++)
+		if (!strcmp(name, students[i].name) || !strcmp(name, students[i].surname))
+		{
+			ROWS;
+			found = true;
+		}
+	if (!found) Message(12, "\nnothing found");
+}
+
+void Student::SearchByMarks(Student*& students, int size, float mark)
+{
+	bool found = false;
+	HEADER
+		cout << setw(80) << setfill('_') << " \n";
+	for (int i = 0; i < size; i++)
+		if (mark > students[i].ave_global - 0.5 && mark < students[i].ave_global + 0.5)
+		{
+			ROWS;
+			found = true;
+		}
+	if (!found) Message(12, "\nnothing found");
+}
+
+
+void Student::SearchByID(Student*& students, int size, int ID)
+{
+	bool found = false;
+	HEADER
+		cout << setw(80) << setfill('_') << " \n";
+	for (int i = 0; i < size; i++)
+		if (students[i].ID = ID)
+		{
+			ROWS;
+			found = true;
+		}
+	if (!found) Message(12, "\nnothing found");
+}
+
+
 
 void Student::Stats(Student*& students, int size)
 {
 	
 	int females = 0, males = 0, unknown = 0;
+	int devops = 0, sysadmins = 0, unknownfac = 0;
+	float fmarks = 0, mmarks = 0, devopsmarks = 0, sysadmmarks = 0;
+
+
 	for (int i = 0; i < size; i++)
 	{
 		students[i].CountAverage();
-		if (students[i].GetGender() == 'f') females++;
-		else if (students[i].GetGender() == 'm') males++;
+		//демографія
+		if (students[i].GetGender() == 'f')
+		{
+			females++; fmarks += students[i].ave_global;
+		}
+		else if (students[i].GetGender() == 'm')
+		{
+			males++; mmarks += students[i].ave_global;
+		}
 		else unknown++;
+		if (!strcmp(students[i].GetFaculty(), "Devops")) 
+		{ 
+			devops++; devopsmarks += students[i].ave_global;
+		}
+		else if (!strcmp(students[i].GetFaculty(), "Sysadmin"))
+		{
+			sysadmins++; sysadmmarks += students[i].ave_global;
+		}
+		else unknownfac++;
 	}
-	Message(11, "\n===============Statstics=============\n");
+	Message(11, "\n===============Statstics ===========\n");
+	cout << "\nCurrent students - " << size;
+	
+	Message(11, "\n===============Statstics by gender ===========\n");
 	cout << "\nMales - " << males;
 	cout << "\nFemales - " << females;
 	cout << "\nUnknown - " << unknown;
-	
-	float fmarks = 0, mmarks = 0;
-	for (int i = 0; i < size; i++)
-	{
-		if (students[i].GetGender() == 'f') fmarks+= students[i].ave_global;
-		else if (students[i].GetGender() == 'm') mmarks+= students[i].ave_global;
-	}
-	
 	cout << "\nAverage males marks - " << mmarks / males;
 	cout << "\nAverage females marks - " << fmarks / females << endl;
+
+	Message(11, "\n===============Statstics by faculty ===========\n");
+
+	cout << "\nDevops - " << devops;
+	cout << "\nSysadmins - " << sysadmins;
+	cout << "\nUnknown - " << unknownfac;
+	cout << "\nAverage devops marks - " << devopsmarks / devops;
+	cout << "\nAverage sysadmin marks - " << sysadmmarks / sysadmins << endl;
+
 }
 
 

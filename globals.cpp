@@ -1,5 +1,7 @@
 ﻿#include "globals.h"
 
+
+
 float Average(int* nums, int size)
 {
 	float sum = 0.0;
@@ -25,6 +27,34 @@ bool ToDoOrNotToDo(string text) // захист від випадково нев
 }
 
 int Entervalue(string text, int max, int min) // дурнестійке введення цифр 
+//(нецифрові символи не призводять до збою програми, а змушують користувача ввести заново)
+//мінімум для наших задач зазвичай буде 1
+{
+	char buff[10]; int value;
+	cout << text << endl;
+	do
+	{
+		cin >> buff;
+		value = atoi(buff);
+		bool job = true;
+		for (int i = 0; i < strlen(buff); i++)
+		{
+			if (!isdigit(buff[i])) {
+				cout << "\nPlease enter digits, not letters!\n";
+				job = false; break;
+			}
+		}
+		if (job)
+		{
+			if (value > max) cout << "Value shoud not exceed  " << max << endl;
+			if (value < min) cout << "Value shoud not be less than " << min << endl;
+		}
+	} while (value > max || value < min);
+	return value;
+}
+
+
+float Entervalue(string text, float max, float min) // дурнестійке введення цифр 
 //(нецифрові символи не призводять до збою програми, а змушують користувача ввести заново)
 //мінімум для наших задач зазвичай буде 1
 {

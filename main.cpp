@@ -1,5 +1,7 @@
 ﻿#include "Student.h"
 #include "globals.h"
+#define ZEROCHOICE case 0: break;\
+default: cout << "wrong choice"; break;
 
 
 int Menu(int type)
@@ -7,7 +9,7 @@ int Menu(int type)
 	int choice;
 	if (type == 1)
 	{
-		cout << "\n+++++++++++++Enter choice+++++++++++++";
+		Message(14, "\n+++++++++++++Enter choice+++++++++++++");
 		cout << "\n1 - Show";  // Один екземпляр, всі параметри за замовченням
 		cout << "\n2 - Edit default student (no marks yet)";
 		cout << "\n3 - Enter name and surname only";
@@ -17,26 +19,38 @@ int Menu(int type)
 		cout << "\n7 - Edit marks (only for teachers)\n";
 		cout << "\n0 - Exit\n";
 	}
-	else if (type == 2)
+	else if (type == 2) 
 	{
-		cout << "\n+++++++++++++Enter choice+++++++++++++";
-		cout << "\n1 - Show";  // Один екземпляр, всі параметри за замовченням
-		cout << "\n2 - Edit student by index";
-		cout << "\n3 - Fill the group step-by-step";
-		cout << "\n4 - Enter new marks";
-		cout << "\n5 - Enter random marks";
+		Message(14, "\n+++++++++++++Enter choice+++++++++++++");
+		cout << "\n1 - Show...";  // Один екземпляр, всі параметри за замовченням
+		cout << "\n2 - Edit...";
+		cout << "\n3 - Random fill...";
+		cout << "\n4 - Add student";
+		cout << "\n5 - Delete student";
 		cout << "\n6 - Explore all marks";
-		cout << "\n7 - Insert random surnames";
-		cout << "\n8 - Insert random names";
-		cout << "\n9 - Insert random faculties";
-		cout << "\n10 - Reset all marks";
-		cout << "\n11 - Add student";
-		cout << "\n12 - Delete student";
-		cout << "\n13 - Edit marks";
-		cout << "\n14 - Sort by average marks";
-		cout << "\n15 - Statistics";
+		cout << "\n7 - Sort...";
+		cout << "\n8 - Search...";
+		cout << "\n9 - Statistics";
 		cout << "\n0 - Exit\n";
-
+	}
+	else if (type == 3) // manual edit
+	{
+		Message(14,"\n++++++++++++ + Enter choice++++++++++++ + ");
+		cout << "\n1 - Edit student by index";
+		cout << "\n2 - Fill the group step-by-step";
+		cout << "\n3 - Enter new marks";
+		cout << "\n4 - Reset all marks";
+		cout << "\n5 - Edit marks (password required)";
+		cout << "\n0 - Exit\n";
+	}
+	else if (type == 4) // random fill
+	{
+		cout << "\n1 - Insert random surnames";
+		cout << "\n2 - Insert random names";
+		cout << "\n3 - Insert random faculties";
+		cout << "\n4 - Enter random marks";
+		cout << "\n5 - All fields random";
+		cout << "\n0 - Exit\n";
 	}
 	else Message(12, "Error in choosing type");
 	cin >> choice;
@@ -44,7 +58,7 @@ int Menu(int type)
 	return choice;
 }
 
-
+int IDCounter = 0;
 
 
 int main()
@@ -53,9 +67,9 @@ int main()
 	SetConsoleOutputCP(1251);
 	SetConsoleCP(1251);
 	int type = Entervalue("Choose mode. 1 - one student. 2 - group of students.", 2);
-	int choice;
+	int choice, editchoice;
 	srand(time(NULL));
-
+	
 
 	if (type == 1)
 	{
@@ -86,8 +100,7 @@ int main()
 			case 5: stud_default.SetMarks(rand() % bestmark + 1, rand() % bestmark + 1, rand() % bestmark + 1); break;
 			case 6: stud_default.ShowMarks(); break;
 			case 7: stud_default.EditMarks(); break;
-			case 0: cout << "thank you for exploring"; break;
-			defalult: cout << "wrong choice"; break;
+				ZEROCHOICE
 			}
 		} while (choice);
 	}
@@ -102,66 +115,127 @@ int main()
 		int size = Entervalue("enter group size", INT_MAX);// кількість студентів у групі
 
 		Student* group = new Student[size];
-		for (int i = 0; i < size; i++)
-			group[i] = Student(); // Викликаємо конструктор за замовченням для кожного об'єкту
 
 		do
 		{
-			int index;
+			int index, min, max;
 			choice = Menu(2); // вибір меню
 			switch (choice)
 			{
-			case 1: group[size].Show(group, size); break;
-			case 2: index = Entervalue("Enter student's ID you want to edit", size);
-				group[index - 1].Edit(index - 1); break;
-			case 3: group[size].Fill(group, size); break;
-			case 4: int prog, uml, hardware;
-				for (int i = 0; i < size; i++)
-				{
-					cout << "Student " << group[i].GetName() << " " << group[i].GetName() << endl;
-					cout << "enter prog mark\n";
-					cin >> prog;
-					cout << "enter uml mark\n";
-					cin >> uml;
-					cout << "enter hardware mark\n";
-					cin >> hardware;
-					group[i].SetMarks(prog, hardware, uml);
+			//SHOW
+			case 1: if (size < maxlist) group[size].Show(group, size); // SHOW
+				  else {
+				editchoice = Entervalue("Choose mode. 1 - Show all, 2 - Show range", 2);//якщо списки завеликі
+				if (editchoice == 1)
+					group[size].Show(group, size);
+				else {
+					min = Entervalue("Show from:", size);
+					max = Entervalue("up to:", size, min);
+					group[size].Show(group, size, --min, --max);
 				}
-				break;
-			case 5:
-				for (int i = 0; i < size; i++)
-					group[i].SetMarks(rand() % bestmark + 1, rand() % bestmark + 1, rand() % bestmark + 1); break;
+			}
+				  break;
+			// EDIT
+			case 2: editchoice = Menu(3); 
+				switch (editchoice) {
+				case 1: index = Entervalue("Enter student's ID you want to edit", size);
+					group[index - 1].Edit(index - 1); break;
+				case 2: group[size].Fill(group, size); break;
+				case 3: int prog, uml, hardware;
+					for (int i = 0; i < size; i++)
+					{
+						cout << "Student " << group[i].GetName() << " " << group[i].GetName() << endl;
+						cout << "enter prog mark\n";
+						cin >> prog;
+						cout << "enter uml mark\n";
+						cin >> uml;
+						cout << "enter hardware mark\n";
+						cin >> hardware;
+						group[i].SetMarks(prog, hardware, uml);
+					}
+					break;
+				case 4:
+					for (int i = 0; i < size; i++)
+						group[i].ResetMarks(); break;
+
+				case 5:
+					index = Entervalue("Enter Student's ID you want to edit", size);
+					group[index].EditMarks(index - 1); break;
+					ZEROCHOICE
+				}break;
+			// RANDOMS
+			case 3: editchoice = Menu(4); 
+				switch (editchoice) {
+				case 1:
+					for (int i = 0; i < size; i++)
+						group[i].RandSurnames(); break;
+				case 2:
+					for (int i = 0; i < size; i++)
+						group[i].RandNames(); break;
+				case 3:
+					for (int i = 0; i < size; i++)
+						group[i].RandFaculty(); break;
+				case 4:
+					for (int i = 0; i < size; i++)
+						group[i].SetMarks(rand() % bestmark + 1, rand() % bestmark + 1, rand() % bestmark + 1); break;
+				case 5:
+					for (int i = 0; i < size; i++)
+					{
+						group[i].RandSurnames(); 
+						group[i].RandNames(); 
+						group[i].RandFaculty(); 
+						group[i].SetMarks(rand() % bestmark + 1, rand() % bestmark + 1, rand() % bestmark + 1); 
+					}
+					break;
+					ZEROCHOICE
+				}break;
+			//ADD
+			case 4: group[0].Add(group, size); break;
+			//DELETE
+			case 5: group[0].Delete(group, size, Entervalue("Enter Student's ID you wnat to delete", size)); break;
+			//MARKS
 			case 6:
 				for (int i = 0; i < size; i++)
 					group[i].ShowMarks(); break;
+			//SORT
+			case 7: editchoice = Entervalue("Choose mode. \n1 - Sort by average marks, \n2 - Sort by ID, \n3 - Sort by surnames", 3);
+				switch (editchoice) {
+				case 1:
+					group[size].Sort(group, size); break;
+				case 2:
+					group[size].SortByID(group, size); break;
+				case 3:  group[size].SortBySurname(group, size); break; //проблеми з дестркутором
+					ZEROCHOICE
+				}
+				break;
+			//SEARCH
+			case 8: editchoice = Entervalue("Choose mode. \n1 - Search by name, \n2 - Search by marks, \n3 - Search by ID", 3);
+				switch (editchoice) {
+				case 1:
+					char name[30];
+					cout << "\nenter name or surname"; cin >> name;
+					group[0].SearchByName(group, size, name); break;
+				case 2:
+					float mark;
+					mark = Entervalue("\nenter requested average mark", 12);
+					group[0].SearchByMarks(group, size, mark); break;
+				case 3:
+					int ID;
+					ID = Entervalue("\nenter ID", INT16_MAX);
+					group[0].SearchByID(group, size, ID); break;
+					ZEROCHOICE
+				}
+				break;
 
-			case 7:
-				for (int i = 0; i < size; i++)
-					group[i].RandSurnames(); break;
-			case 8:
-				for (int i = 0; i < size; i++)
-					group[i].RandNames(); break;
-			case 9:
-				for (int i = 0; i < size; i++)
-					group[i].RandFaculty(); break;
-			case 10: 
-				for (int i = 0; i < size; i++)
-					group[i].ResetMarks(); break;
-			case 11: group[0].Add(group, size); break;
-			case 12: group[0].Delete(group, size, Entervalue("Enter Student's ID you wnat to delete", size)); break;
-			case 13: 
-				index = Entervalue("Enter Student's ID you wnat to edit", size);
-				group[index].EditMarks(index - 1); break;
-			case 14: group[0].Sort(group, size); group[0].Show(group, size); break;//проблеми з дестркутором
-			case 15: group[0].Stats(group, size); break;
-			case 0: cout << "thank you for exploring"; break;
-			default: cout << "wrong choice"; break;
+			//STATS
+			case 9: group[0].Stats(group, size); break;
+				ZEROCHOICE
 			}
 		} while (choice);
 	}
 
 
-	cout << "\nThanks for your patience!";
+	Message(11, "Thanks for your patience!");
 }
 
 /* ----------------------------- */

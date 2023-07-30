@@ -1,10 +1,15 @@
 ﻿  Student.cpp
-H:\source\ClassWorkout\ClassWorkout\Student.cpp(149,40): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
-H:\source\ClassWorkout\ClassWorkout\Student.cpp(150,37): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
-H:\source\ClassWorkout\ClassWorkout\Student.cpp(151,32): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
-H:\source\ClassWorkout\ClassWorkout\Student.cpp(188,53): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-H:\source\ClassWorkout\ClassWorkout\Student.cpp(189,59): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-H:\source\ClassWorkout\ClassWorkout\Student.cpp(190,49): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-H:\source\ClassWorkout\ClassWorkout\Student.cpp(191,70): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-H:\source\ClassWorkout\ClassWorkout\Student.cpp(296,17): warning C4101: 'choice': unreferenced local variable
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(176,40): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(177,37): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(178,32): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(216,53): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(217,59): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(218,49): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(219,70): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(278,4): warning C4244: 'argument': conversion from 'double' to 'std::streamsize', possible loss of data
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(290,3): warning C4244: 'argument': conversion from 'double' to 'std::streamsize', possible loss of data
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(329,17): warning C4101: 'choice': unreferenced local variable
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(464,4): warning C4244: 'argument': conversion from 'double' to 'std::streamsize', possible loss of data
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(478,4): warning C4244: 'argument': conversion from 'double' to 'std::streamsize', possible loss of data
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(493,4): warning C4244: 'argument': conversion from 'double' to 'std::streamsize', possible loss of data
   ClassWorkout.vcxproj -> H:\source\ClassWorkout\x64\Debug\ClassWorkout.exe
