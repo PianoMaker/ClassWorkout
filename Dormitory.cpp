@@ -18,7 +18,7 @@ Dormitory::Dormitory() : numberofrooms(0)
 	room = new Room[numberofrooms]; // Allocate memory for numberofrooms
 	strcpy(address, "Unknown str, 0"); // Copy the address to the class member
 	for (int i = 0; i < numberofrooms; i++)
-		for (int j = 0; j < beds; j++)
+		for (int j = 0; j < places; j++)
 			room[i].settler[j];
 }
 
@@ -28,7 +28,7 @@ Dormitory::Dormitory(int numnumberofrooms, const char* dormAddress) : numberofro
 	room = new Room[numberofrooms]; // Allocate memory for numberofrooms
 	strcpy(address, dormAddress); // Copy the address to the class member
 	for (int i = 0; i < numberofrooms; i++)
-		for (int j = 0; j < beds; j++)
+		for (int j = 0; j < places; j++)
 			room[i].settler[j];
 }
 
@@ -55,7 +55,9 @@ void Dormitory::Show()
 	Message(11, "Dormitory info");
 	cout << "\nAdress: " << address;
 	cout << "\nrooms built:  " << numberofrooms << endl;
-	cout << "\ncapacity:  " << numberofrooms*beds << endl;
+	cout << "\ncapacity:  " << numberofrooms*places<< endl;
+	cout << "\nstudents settled: " << Settled() << endl;
+	cout << "\nplaces aailable: " << numberofrooms * places- Settled() << endl;
 }
 
 void Dormitory::ShowRoom()
@@ -67,7 +69,7 @@ void Dormitory::ShowRoom()
 		for (int i = 0; i < numberofrooms; i++)
 		{
 			cout << "room #" << room[i].roomnumber << "\n";
-			for (int j = 0; j < beds; j++)
+			for (int j = 0; j < places; j++)
 				if (room[i].settler[j].GetID() > 0) ROW
 				else cout << "\t" << "no settler yet\n";
 
@@ -84,7 +86,7 @@ void Dormitory::Build(int num)
 	for (int i = numberofrooms; i < numberofrooms + num; i++)
 	{
 		temp[i].roomnumber = i + 1;
-		for (int j = 0; j < beds; j++)
+		for (int j = 0; j < places; j++)
 		{
 			temp[i].settler[j].SetID(0); 
 			IDCounter--;
@@ -104,7 +106,7 @@ void Dormitory::SettleAll(Student *students, int size)
 	for (int i = 0; i < numberofrooms && id < size; i++)
 	{
 		room[i].roomnumber = i + 1;
-		for (int j = 0; j < beds; j++)
+		for (int j = 0; j < places; j++)
 		{
 			if (room[i].settler[j].GetID()) continue;
 			while (students[id].Getroom() && id<size) id++;
@@ -120,28 +122,26 @@ void Dormitory::SettleAll(Student *students, int size)
 
 void Dormitory::SettleByGender(Student* students, int size)
 {
-	int id = 0; int gendergap;
-	for (int i = 0; i < numberofrooms && id < size; i++)
+	int index = 0; int gendergap;
+	for (int i = 0; i < numberofrooms && index < size; i++)
 	{
 		gendergap = 0;
 		room[i].roomnumber = i + 1;
-		for (int j = 0; j < beds; j++)
+		for (int j = 0; j < places; j++)
 		{
 			if (room[i].settler[j].GetID()) continue;
-			while (students[id].Getroom() && id < size) id++;
-			while (j>0 && students[id].GetGender() != room[i].settler[0].GetGender() && id < size) 
+			while (students[index].Getroom() && index < size) { index++; gendergap++; }
+			while (j>0 && students[index].GetGender() != room[i].settler[0].GetGender() && index < size)
 				// якщо інший претендент не співпав за статтю з першим поседенцем
+			{ gendergap++; index++;	}
+			if (index < size)
 			{
-				gendergap++; id++;
-			}
-			if (id < size)
-			{
-				students[id].SetRoom(i + 1);
-				room[i].settler[j] = students[id];
+				students[index].SetRoom(i + 1);
+				room[i].settler[j] = students[index];
 				IDCounter--;
 			}
 		}
-		id -= gendergap;
+		index -= gendergap;
 	}
 }
 
@@ -149,7 +149,7 @@ void Dormitory::Evict(int id)
 {
 	
 	for (int i = 0; i < numberofrooms; i++)
-		for (int j = 0; j < beds; j++)
+		for (int j = 0; j < places; j++)
 		{
 			if (room[i].settler[j].GetID() == id)
 			{
@@ -164,9 +164,23 @@ void Dormitory::Evict(int id)
 void Dormitory::EvictAll()
 {
 	for (int i = 0; i < numberofrooms; i++)
-		for (int j = 0; j < beds; j++)
+		for (int j = 0; j < places; j++)
 		{
 			room[i].settler[j].~Student();
 			room[i].settler[j].SetID(0);
 		}
 }
+
+int Dormitory::Settled()
+{
+	int settled = 0;
+	for (int i = 0; i < numberofrooms; i++)
+		for (int j = 0; j < places; j++)
+		{
+			if (room[i].settler[j].GetID() > 0)
+				settled++;
+		}
+	return settled;
+}
+
+

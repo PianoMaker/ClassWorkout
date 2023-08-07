@@ -7,7 +7,7 @@
 struct Room
 {
 	int roomnumber;
-	Student settler[beds];
+	Student settler[places];
 };
 
 class Dormitory 
@@ -30,6 +30,7 @@ public:
 	//void SetRoomNumber(int num);
 	void Evict(int id);
 	void EvictAll();
+	int Settled();
 
 
 

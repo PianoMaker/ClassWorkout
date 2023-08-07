@@ -46,9 +46,10 @@ public:
 	char* GetSurname();
 	char* GetFaculty();
 	int GetAdmission_year();
-	int GetProgramming();
-	int GetHardware();
-	int Getuml();
+	float GetProgramming();
+	float GetHardware();
+	float GetAveMarks();
+	float Getuml();
 	int Getroom();
 	int GetID();
 	void SetID(int id);
@@ -103,6 +104,7 @@ public:
 	void SearchByName(Student* students, int size, char* name);
 	void SearchByMarks(Student* students, int size, float mark);
 	void SearchByID(Student* students, int size, int ID);
+	void SearchByRoom(Student* students, int size, int room);
 
 	// додавання і вилучення
 	void Add(Student*& students, int& size);

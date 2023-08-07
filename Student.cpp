@@ -58,6 +58,8 @@ Student::Student(int lessons, char* name, char* surname, char* faculty, int admi
 	}
 	ave_prog = Average(c_prog, lessons);
 	ave_hardware = Average(hardware, lessons);
+	ave_uml = Average(uml, lessons);
+	ave_global = (ave_uml + ave_hardware + ave_prog) / 3;
 }
 /*
 * 
@@ -185,9 +187,10 @@ char* Student::GetSurname() { return surname; }
 char* Student::GetFaculty() { return faculty; }
 char Student::GetGender() { return gender; }
 int Student::GetAdmission_year() { return admission_year; }
-int Student::GetProgramming() { return ave_prog; }
-int Student::GetHardware() { return ave_hardware; }
-int Student::Getuml() { return ave_uml; }
+float Student::GetProgramming() { return ave_prog; }
+float Student::GetHardware() { return ave_hardware; }
+float Student::Getuml() { return ave_uml; }
+float Student::GetAveMarks() { return ave_global; }
 int Student::Getroom() { return room; }
 int Student::GetID() { return ID; }
 
@@ -440,8 +443,6 @@ void Student::Delete(Student*& students, int& size, int index)
 	}
 
 
-
-
 	//delete[] students; // Видалення спричиняє помилку. ЧОМУ????
 	students = temp;   
 	size--; 
@@ -535,6 +536,20 @@ void Student::SearchByID(Student* students, int size, int ID)
 	if (!found) Message(12, "\nnothing found");
 }
 
+void Student::SearchByRoom(Student* students, int size, int room)
+{
+	bool found = false;
+	HEADER
+		cout << setw(80) << setfill('_') << " \n";
+	for (int i = 0; i < size; i++)
+		if (students[i].room == room)
+		{
+			ROWS;
+			found = true;
+		}
+	if (!found) Message(12, "\nnothing found");
+}
+
 
 
 void Student::Stats(Student*& students, int size)
@@ -543,6 +558,7 @@ void Student::Stats(Student*& students, int size)
 	int females = 0, males = 0, unknown = 0;
 	int devops = 0, sysadmins = 0, unknownfac = 0;
 	float fmarks = 0, mmarks = 0, devopsmarks = 0, sysadmmarks = 0;
+	int settled = 0;
 
 
 	for (int i = 0; i < size; i++)
@@ -567,9 +583,12 @@ void Student::Stats(Student*& students, int size)
 			sysadmins++; sysadmmarks += students[i].ave_global;
 		}
 		else unknownfac++;
+		if (students[i].room > 0) settled++;
 	}
 	Message(11, "\n===============Statstics ===========\n");
 	cout << "\nCurrent students - " << size;
+	cout << "\nSettled in dormitory - " << settled;
+	cout << "\nnot settled - " << size - settled;
 	
 	Message(11, "\n===============Statstics by gender ===========\n");
 	cout << "\nMales - " << males;

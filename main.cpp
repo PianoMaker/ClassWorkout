@@ -26,7 +26,7 @@ int Menu(int type)
 		cout << "\n1 - Show...";  // Один екземпляр, всі параметри за замовченням
 		cout << "\n2 - Edit...";
 		cout << "\n3 - Random fill...";
-		cout << "\n4 - Add student";
+		cout << "\n4 - Add...";
 		cout << "\n5 - Delete...";
 		cout << "\n6 - Explore all marks";
 		cout << "\n7 - Sort...";
@@ -56,12 +56,12 @@ int Menu(int type)
 	}
 	else if (type == 5) // dormitories
 	{
-		cout << "\n1 - Show Settle info";
+		cout << "\n1 - Show Settled students info";
 		cout << "\n2 - Show dormitories info";
 		cout << "\n3 - Build new rooms";
-		cout << "\n4 - Settle one-by-one";
+		cout << "\n4 - Settle all";
 		//cout << "\n5 - Re-settle randomly";
-		cout << "\n6 - Settle using gender segregation";
+		cout << "\n6 - Settle all using gender segregation";
 		cout << "\n7 - Show info for each room";
 		cout << "\n8 - Evict all students";
 		cout << "\n0 - Exit\n";
@@ -133,7 +133,7 @@ int main()
 
 		do
 		{
-			int index, min, max, rnum, id;
+			int index, min, max, amount, id;
 			choice = Menu(2); // вибір меню
 			switch (choice)
 			{
@@ -180,31 +180,39 @@ int main()
 				switch (editchoice) {
 				case 1:
 					for (int i = 0; i < size; i++)
-						group[i].RandSurnames(); break;
+						if(!strcmp(group[i].GetSurname(),"Unknown"))group[i].RandSurnames(); 
+					break;
 				case 2:
 					for (int i = 0; i < size; i++)
-						group[i].RandNames(); break;
+						if (!strcmp(group[i].GetName(), "Unknown"))group[i].RandNames(); 
+					break;
 				case 3:
 					for (int i = 0; i < size; i++)
-						group[i].RandFaculty(); break;
+						if (!strcmp(group[i].GetFaculty(), "Unknown"))group[i].RandFaculty(); 
+					break;
 				case 4:
 					for (int i = 0; i < size; i++)
-						group[i].SetMarks(rand() % bestmark + 1, rand() % bestmark + 1, rand() % bestmark + 1); break;
+						group[i].SetMarks(rand() % bestmark + 1, rand() % bestmark + 1, rand() % bestmark + 1); 
+					break;
 				case 5:
 					for (int i = 0; i < size; i++)
 					{
-						group[i].RandSurnames(); 
-						group[i].RandNames(); 
-						group[i].RandFaculty(); 
+						if (!strcmp(group[i].GetSurname(), "Unknown"))group[i].RandSurnames();
+						if (!strcmp(group[i].GetName(), "Unknown"))group[i].RandNames();
+						if (!strcmp(group[i].GetFaculty(), "Unknown"))group[i].RandFaculty();
 						group[i].SetMarks(rand() % bestmark + 1, rand() % bestmark + 1, rand() % bestmark + 1); 
 					}
 					break;
 					ZEROCHOICE
 				}break;
 			//ADD
-			case 4: group[0].Add(group, size); break;
+			case 4: 
+				amount = Entervalue("How many students to add?", INT16_MAX, 0);
+				for (int i = 0; i < amount; i++)
+					group[0].Add(group, size);
+				break;
 			//DELETE
-			case 5: editchoice = Entervalue("Choose mode. \n1- Delete by #\n2 - Delete by index\n3 - Delete all students",3);
+			case 5: editchoice = Entervalue("Choose mode. \n1- Delete by #\n2 - Delete by index\n3 - Delete unsuccessful students \n4 - Delete all students\n0 - exit",3, 0);
 				switch (editchoice)
 				{
 				case 1: index = Entervalue("Enter Student's # you wnat to delete", size); index--;
@@ -213,12 +221,23 @@ int main()
 					dormhouse.Evict(id);
 					for (int i = 0; i < size; i++)
 						if (group[i].GetID() == id)group[i].Delete(group, size, i); break;
-				case 3:
+				case 3: amount = Entervalue("Enter the worse average mark allowable", 12, 1);
+					for (int i = 0; i < size; i++)
+					{
+						if(group[i].GetAveMarks()<amount)
+						{
+							cout << "\ni = " << i << "ave=" << group[i].GetAveMarks();
+							group[i].Delete(group, size, i);
+							dormhouse.Evict(i);						
+						}
+					}break;
+				case 4:
 					for (int i = 0; i < size; i++)
 					{
 						group[i].Delete(group, size, i); 
 						dormhouse.EvictAll();
 					}
+					ZEROCHOICE
 				}break;
 			
 			//MARKS
@@ -226,7 +245,7 @@ int main()
 				for (int i = 0; i < size; i++)
 					group[i].ShowMarks(); break;
 			//SORT
-			case 7: editchoice = Entervalue("Choose mode. \n1 - Sort by average marks, \n2 - Sort by ID, \n3 - Sort by surnames,\4 - Sort by names", 4);
+			case 7: editchoice = Entervalue("Choose mode. \n1 - Sort by average marks, \n2 - Sort by ID, \n3 - Sort by surnames,\4 - Sort by names", 4, 0);
 				switch (editchoice) {
 				case 1:
 					group[size].Sort(group, size); break;
@@ -238,7 +257,7 @@ int main()
 				}
 				break;
 			//SEARCH
-			case 8: editchoice = Entervalue("Choose mode. \n1 - Search by name, \n2 - Search by marks, \n3 - Search by ID", 3);
+			case 8: editchoice = Entervalue("Choose mode. \n1 - Search by name, \n2 - Search by marks, \n3 - Search by ID\n4 - Search by room", 4, 0);
 				switch (editchoice) {
 				case 1:
 					char name[30];
@@ -252,7 +271,11 @@ int main()
 					int ID;
 					ID = Entervalue("\nenter ID", INT16_MAX);
 					group[0].SearchByID(group, size, ID); break;
-					
+				case 4:
+					int room;
+					room = Entervalue("\nenter room", INT16_MAX);
+					group[0].SearchByRoom(group, size, room); break;
+					ZEROCHOICE
 				}
 				break;
 
@@ -267,8 +290,8 @@ int main()
 					switch (editchoice) {
 					case 1: group[size].SettleInfo(group, size); break;
 					case 2: dormhouse.Show(); break;
-					case 3: rnum = Entervalue("How many rooms to build?", INT16_MAX);
-						dormhouse.Build(rnum); break;
+					case 3: amount = Entervalue("How many rooms to build?", INT16_MAX, 0);
+						dormhouse.Build(amount); break;
 					
 						//cout << "\n3 - Build new rooms";
 					case 4: dormhouse.SettleAll(group, size); break;

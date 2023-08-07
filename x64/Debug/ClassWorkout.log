@@ -1,3 +1,4 @@
-﻿  Dormitory.cpp
-H:\source\ClassWorkout\ClassWorkout\Dormitory.cpp(71,41): warning C4244: 'argument': conversion from 'double' to 'std::streamsize', possible loss of data
+﻿  main.cpp
+H:\source\ClassWorkout\ClassWorkout\main.cpp(85,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+H:\source\ClassWorkout\ClassWorkout\main.cpp(268,23): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
   ClassWorkout.vcxproj -> H:\source\ClassWorkout\x64\Debug\ClassWorkout.exe
