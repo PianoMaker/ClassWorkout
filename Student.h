@@ -21,16 +21,20 @@ private:
 	float ave_hardware;
 	float ave_uml;
 	float ave_global;
+	int room;
 
 public:
 	
 	Student(); // конструктор за замовченням
 	// конструктор з усіма параметрами
 	Student(int lessons, char* name, char* surname, char* faculty, int admission_year, int* c_prog, int* hardware, int* uml);
-	
-	Student(const Student& obj);// копіювання
-	~Student();// деструктор;
-	
+/*
+  //ALARM!!! При включеному конструкторі-копіювання + деструктор збивається алгоритм сортування!!!.
+  */
+	Student(const Student& obj);// копіювання  
+	~Student();// деструктор;                         
+	/*
+	*/ 
 
 	// іменний сеттер 
 	void SetName(char* name, char* surname);
@@ -45,7 +49,12 @@ public:
 	int GetProgramming();
 	int GetHardware();
 	int Getuml();
+	int Getroom();
+	int GetID();
+	void SetID(int id);
+	void SetRoom(int room);
 	char GetGender();
+
 
 	/* редактор */
 
@@ -65,10 +74,10 @@ public:
 	/* Виведення на екран */
 
 	void Show(int index = 0);// для моделі в один екземпляр
-	void Show(Student* students, int size); // показати весь список
-	void Show(Student* students, int size, int ID_min, int ID_max); // показати діапазон в заданих межах
+	void Show(const Student* students, int size); // показати весь список
+	void Show(const Student* students, int size, int ID_min, int ID_max); // показати діапазон в заданих межах
 	void ShowMarks(int index = 0);
-	
+	void SettleInfo(const Student* students, int size);
 
 	/* створення екземплярів з випадковими параметрами */
 
@@ -85,14 +94,15 @@ public:
 	void SortByID(Student*& students, int size);
 	void SwapStudents(Student* students, int index1, int index2);
 	void SortBySurname(Student*& students, int size);
+	void SortByName(Student*& students, int size);
 
 	// очищення оцінок
 	void ResetMarks();
 
 	// пошук
-	void SearchByName(Student*& students, int size, char* name);
-	void SearchByMarks(Student*& students, int size, float mark);
-	void SearchByID(Student*& students, int size, int ID);
+	void SearchByName(Student* students, int size, char* name);
+	void SearchByMarks(Student* students, int size, float mark);
+	void SearchByID(Student* students, int size, int ID);
 
 	// додавання і вилучення
 	void Add(Student*& students, int& size);

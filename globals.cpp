@@ -54,9 +54,7 @@ int Entervalue(string text, int max, int min) // дурнестійке введ
 }
 
 
-float Entervalue(string text, float max, float min) // дурнестійке введення цифр 
-//(нецифрові символи не призводять до збою програми, а змушують користувача ввести заново)
-//мінімум для наших задач зазвичай буде 1
+float Entervalue(string text, float max, float min) // переробити на шаблон функції Т?
 {
 	char buff[10]; int value;
 	cout << text << endl;

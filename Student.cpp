@@ -1,10 +1,11 @@
 ﻿//student.cpp
 #include "Student.h"
 #include "globals.h"
+#include "Dormitory.h"
 
 #pragma warning (disable:4996)
 #define HEADER cout << "#\tID\tName\t\tSurname\t\tGender\tFaculty\t\tAdm.Year\tC++\tHardw.\tUML.\t global\n";
-#define ROWS cout << setw(log10(size) + 1) << i + 1 << "\t"\
+#define MAINROW cout << setw(log10(size) + 1) << i + 1 << "\t"\
 << setfill('0')\
 << setw(log10(size) + 1) << students[i].ID << "\t"\
 << left << setfill(' ')\
@@ -13,12 +14,15 @@
 << setw(1) << students[i].gender << "\t"\
 << setw(12) << students[i].faculty << "\t"\
 << setw(5) << students[i].admission_year << "\t\t"\
-<< right\
+
+#define ROWS MAINROW << right\
 << setw(2) << students[i].ave_prog << "\t"\
 << setw(2) << students[i].ave_hardware << "\t"\
 << setw(2) << students[i].ave_uml << "\t"\
 << setw(2) << students[i].ave_global << "\n";
 
+#define SETTLE MAINROW << right\
+<< setw(2) << students[i].room << "\n";
 
 
 using namespace std;
@@ -26,7 +30,6 @@ using namespace std;
 
 
 Student::Student(): lessons(0)
-
 {
 	ID = ++IDCounter;
 	strcpy(name, "Unknown");
@@ -35,6 +38,7 @@ Student::Student(): lessons(0)
 	gender = '?';
 	admission_year = 2023;
 	CountAverage();
+	room = 0;
 }
 
 // конструктор з усіма параметрами
@@ -55,7 +59,10 @@ Student::Student(int lessons, char* name, char* surname, char* faculty, int admi
 	ave_prog = Average(c_prog, lessons);
 	ave_hardware = Average(hardware, lessons);
 }
-/**/
+/*
+* 
+*   //Цікавинка. За відсутнього копіювання середніх значень алгоритм сортування збивається
+*/
 Student::Student(const Student& obj)// копіювання
 {
 	this->ID = obj.ID;
@@ -71,15 +78,20 @@ Student::Student(const Student& obj)// копіювання
 		this->hardware[i] = obj.hardware[i];
 		this->uml[i] = obj.uml[i];
 	}
+	this->ave_hardware = obj.ave_hardware;
+	this->ave_prog = obj.ave_prog;
+	this->ave_uml = obj.ave_uml;
+	this->ave_global = obj.ave_global;
+	this->room = obj.room;
 }
 Student::~Student()// деструктор
 {
-	//delete[] c_prog; // глюкає при сортуванні !!!
+	//delete[] c_prog; // ALARM!!! глюкає при сортуванні !!!
 	//delete[] hardware;
 	//delete[] uml;
 }
-
-
+/*
+*/
 
 
 // іменний сеттер 
@@ -101,7 +113,7 @@ void Student::SetMarks(int c_prog, int hardware, int uml)
 	}
 	temp[lessons] = c_prog;
 	this->c_prog = temp;
-	//delete[] temp;
+	//delete[] temp; // ALARM!!!  сміття замість оцінок!
 
 //предмет hardware
 	int* temp2 = new int[lessons + 1];
@@ -111,7 +123,7 @@ void Student::SetMarks(int c_prog, int hardware, int uml)
 	}
 	temp2[lessons] = hardware;
 	this->hardware = temp2;
-	//delete temp2;
+	//delete temp2; // ALARM!!!  сміття замість оцінок!
 
 	//предмет winconfig
 	int* temp3 = new int[lessons + 1];
@@ -124,7 +136,7 @@ void Student::SetMarks(int c_prog, int hardware, int uml)
 
 	lessons++;
 	CountAverage();
-	//delete temp3;
+	//delete temp3; // ALARM!!!  сміття замість оцінок!
 }
 
 void Student::EditMarks(int index)
@@ -176,6 +188,12 @@ int Student::GetAdmission_year() { return admission_year; }
 int Student::GetProgramming() { return ave_prog; }
 int Student::GetHardware() { return ave_hardware; }
 int Student::Getuml() { return ave_uml; }
+int Student::Getroom() { return room; }
+int Student::GetID() { return ID; }
+
+// сеттери
+void Student::SetID(int id) { ID = id; }
+void Student::SetRoom(int room) { this->room = room; }
 
 
 // Інший варіант. Працює як мультисеттер 
@@ -268,27 +286,32 @@ void Student::Show(int index) // для одного студента
 		<< setw(2) << ave_global << "\n";
 }
 
-void Student::Show(Student* students, int size)//для групи студентів
+void Student::Show(const Student* students, int size)//для групи студентів
 {
 	HEADER;
 	cout << setw(120) << setfill('_') << " \n";
 	for (int i = 0; i < size; i++)
-	{
-		students[i].CountAverage();
-			ROWS
-	}
+		ROWS
+
 }
 
 
-void Student::Show(Student* students, int size, int ID_min, int ID_max)//для групи студентів
+void Student::Show(const Student* students, int size, int ID_min, int ID_max)//для групи студентів
 {
 	HEADER;
 	cout << setw(80) << setfill('_') << " \n";
 	for (int i = ID_min; i <= ID_max; i++)
-	{
-		students[i].CountAverage();
 		ROWS
-	}
+
+}
+
+void Student::SettleInfo(const Student* students, int size)
+{
+	cout << "#\tID\tName\t\tSurname\t\tGender\tFaculty\t\tAdm.Year\tRoom#\n";
+	cout << setw(80) << setfill('_') << " \n";
+	for (int i = 0; i < size; i++)
+		SETTLE;
+
 }
 
 
@@ -305,10 +328,11 @@ void Student::RandSurnames()
 void Student::RandNames()
 {
 	int const numberofnames = 26;
-	char name[numberofnames][10] = { "Ivan", "Dmytro", "Petro", "Pavlo", "Mykola", "Volodymyr", "Danylo", "Stepan", "Fedir", "Andriy", "Maxym", /*12*/ "Oksana", "Ivanka", "Olena", "Kateryna", "Olha", "Karina", "Myroslava", "Anna", "Orysia", "Nadia", "Natalie", "Alina", "Sofia", "Ella", "Alla"};
+	char name[numberofnames][10] = { "Ivan", "Dmytro", "Petro", "Pavlo", "Mykola", "Volodymyr", "Danylo", "Stepan", "Fedir", "Andriy", "Maxym", /*11*/ "Oksana", "Ivanka", "Olena", "Kateryna", "Olha", "Karina", "Myroslava", "Anna", "Orysia", "Nadia", "Natalie", "Alina", "Sofia", "Ella", "Alla"};
 	int random = rand() % numberofnames;
 	strcpy(this->name, name[random]);
-	if (random < 12) gender = 'm';
+	if (random < 11) gender = 'm';
+	
 	else gender = 'f';	
 }
 
@@ -351,6 +375,7 @@ void Student::Edit(int index)
 	} while (oncemore);
 }
 //для групи студентів
+
 
 void Student::SetGender()
 {
@@ -397,14 +422,12 @@ void Student::Add(Student*& students, int& size)
 
 void Student::Delete(Student*& students, int& size, int index)
 {
-	cout << "\nIDCounter before= " << IDCounter;
-	index--; 
-
+	
 	Student* temp = new Student[size - 1];
 	for (int i = 0; i < size - 1; i++)
 	IDCounter--;// запобігання зростанню ID. Костильне програмування, але нічого іншого не виходить!!!
 
-	cout << "\nIDCounter after = " << IDCounter;
+	
 
 	for (int i = 0; i < index; i++)
 	{
@@ -415,6 +438,9 @@ void Student::Delete(Student*& students, int& size, int index)
 	{
 		temp[i - 1] = students[i];
 	}
+
+
+
 
 	//delete[] students; // Видалення спричиняє помилку. ЧОМУ????
 	students = temp;   
@@ -432,9 +458,13 @@ void Student::SwapStudents(Student* students, int index1, int index2) {
 void Student::Sort(Student*& students, int size)
 {
 	for (int j = 0; j < size; j++)
+	{
 		for (int i = 1; i < size; i++)
 			if (students[i - 1].ave_global < students[i].ave_global)
-				SwapStudents(students, i - 1, i);
+				swap(students[i - 1], students[i]);
+		//Show(students, size); /*For test*/
+		//Sleep(1000);
+	}
 }
 
 void Student::SortByID(Student*& students, int size)
@@ -453,7 +483,16 @@ void Student::SortBySurname(Student*& students, int size)
 				SwapStudents(students, i - 1, i);
 }
 
-void Student::SearchByName(Student*& students, int size, char* name)
+void Student::SortByName(Student*& students, int size)
+{
+	for (int j = 0; j < size; j++)
+		for (int i = 1; i < size; i++)
+			if (strcmp(students[i - 1].name, students[i].name) > 0)
+				SwapStudents(students, i - 1, i);
+}
+
+
+void Student::SearchByName(Student* students, int size, char* name)
 {
 	bool found = false;
 	HEADER
@@ -467,7 +506,7 @@ void Student::SearchByName(Student*& students, int size, char* name)
 	if (!found) Message(12, "\nnothing found");
 }
 
-void Student::SearchByMarks(Student*& students, int size, float mark)
+void Student::SearchByMarks(Student* students, int size, float mark)
 {
 	bool found = false;
 	HEADER
@@ -482,13 +521,13 @@ void Student::SearchByMarks(Student*& students, int size, float mark)
 }
 
 
-void Student::SearchByID(Student*& students, int size, int ID)
+void Student::SearchByID(Student* students, int size, int ID)
 {
 	bool found = false;
 	HEADER
 		cout << setw(80) << setfill('_') << " \n";
 	for (int i = 0; i < size; i++)
-		if (students[i].ID = ID)
+		if (students[i].ID == ID)
 		{
 			ROWS;
 			found = true;
@@ -548,6 +587,10 @@ void Student::Stats(Student*& students, int size)
 	cout << "\nAverage sysadmin marks - " << sysadmmarks / sysadmins << endl;
 
 }
+
+
+
+
 
 
 

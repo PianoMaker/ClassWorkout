@@ -9,6 +9,7 @@ using namespace std;
 const char teacher[8] = "teacher"; // використовується як пароль.
 const int bestmark = 12; // максимальна оцінка судентів
 const int maxlist = 20; // максимальна кількість елементів у списку за замовченням
+const int beds = 4; // кількість місць у кімнаті гуртожитку
 
 float Average(int* nums, int size);
 int Entervalue(string text, int max, int min = 1);

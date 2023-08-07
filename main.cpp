@@ -1,5 +1,6 @@
 ﻿#include "Student.h"
 #include "globals.h"
+#include "Dormitory.h"
 #define ZEROCHOICE case 0: break;\
 default: cout << "wrong choice"; break;
 
@@ -26,11 +27,12 @@ int Menu(int type)
 		cout << "\n2 - Edit...";
 		cout << "\n3 - Random fill...";
 		cout << "\n4 - Add student";
-		cout << "\n5 - Delete student";
+		cout << "\n5 - Delete...";
 		cout << "\n6 - Explore all marks";
 		cout << "\n7 - Sort...";
 		cout << "\n8 - Search...";
 		cout << "\n9 - Statistics";
+		cout << "\n10 - Settle...";
 		cout << "\n0 - Exit\n";
 	}
 	else if (type == 3) // manual edit
@@ -50,6 +52,18 @@ int Menu(int type)
 		cout << "\n3 - Insert random faculties";
 		cout << "\n4 - Enter random marks";
 		cout << "\n5 - All fields random";
+		cout << "\n0 - Exit\n";
+	}
+	else if (type == 5) // dormitories
+	{
+		cout << "\n1 - Show Settle info";
+		cout << "\n2 - Show dormitories info";
+		cout << "\n3 - Build new rooms";
+		cout << "\n4 - Settle one-by-one";
+		//cout << "\n5 - Re-settle randomly";
+		cout << "\n6 - Settle using gender segregation";
+		cout << "\n7 - Show info for each room";
+		cout << "\n8 - Evict all students";
 		cout << "\n0 - Exit\n";
 	}
 	else Message(12, "Error in choosing type");
@@ -115,10 +129,11 @@ int main()
 		int size = Entervalue("enter group size", INT_MAX);// кількість студентів у групі
 
 		Student* group = new Student[size];
+		Dormitory dormhouse; 
 
 		do
 		{
-			int index, min, max;
+			int index, min, max, rnum, id;
 			choice = Menu(2); // вибір меню
 			switch (choice)
 			{
@@ -144,13 +159,10 @@ int main()
 				case 3: int prog, uml, hardware;
 					for (int i = 0; i < size; i++)
 					{
-						cout << "Student " << group[i].GetName() << " " << group[i].GetName() << endl;
-						cout << "enter prog mark\n";
-						cin >> prog;
-						cout << "enter uml mark\n";
-						cin >> uml;
-						cout << "enter hardware mark\n";
-						cin >> hardware;
+						cout << "Student " << group[i].GetName() << " " << group[i].GetSurname() << endl;
+						prog = Entervalue("enter prog mark\n", bestmark);
+						uml = Entervalue("enter uml mark\n", bestmark);
+						hardware = Entervalue("enter hardware mark\n", bestmark);
 						group[i].SetMarks(prog, hardware, uml);
 					}
 					break;
@@ -159,7 +171,7 @@ int main()
 						group[i].ResetMarks(); break;
 
 				case 5:
-					index = Entervalue("Enter Student's ID you want to edit", size);
+					index = Entervalue("Enter Student's # you want to edit", size);
 					group[index].EditMarks(index - 1); break;
 					ZEROCHOICE
 				}break;
@@ -192,19 +204,36 @@ int main()
 			//ADD
 			case 4: group[0].Add(group, size); break;
 			//DELETE
-			case 5: group[0].Delete(group, size, Entervalue("Enter Student's ID you wnat to delete", size)); break;
+			case 5: editchoice = Entervalue("Choose mode. \n1- Delete by #\n2 - Delete by index\n3 - Delete all students",3);
+				switch (editchoice)
+				{
+				case 1: index = Entervalue("Enter Student's # you wnat to delete", size); index--;
+					dormhouse.Evict(group[index].GetID()); group[0].Delete(group, size, index); break;
+				case 2: id = Entervalue("Enter Student's ID you wnat to delete", size);
+					dormhouse.Evict(id);
+					for (int i = 0; i < size; i++)
+						if (group[i].GetID() == id)group[i].Delete(group, size, i); break;
+				case 3:
+					for (int i = 0; i < size; i++)
+					{
+						group[i].Delete(group, size, i); 
+						dormhouse.EvictAll();
+					}
+				}break;
+			
 			//MARKS
 			case 6:
 				for (int i = 0; i < size; i++)
 					group[i].ShowMarks(); break;
 			//SORT
-			case 7: editchoice = Entervalue("Choose mode. \n1 - Sort by average marks, \n2 - Sort by ID, \n3 - Sort by surnames", 3);
+			case 7: editchoice = Entervalue("Choose mode. \n1 - Sort by average marks, \n2 - Sort by ID, \n3 - Sort by surnames,\4 - Sort by names", 4);
 				switch (editchoice) {
 				case 1:
 					group[size].Sort(group, size); break;
 				case 2:
 					group[size].SortByID(group, size); break;
-				case 3:  group[size].SortBySurname(group, size); break; //проблеми з дестркутором
+				case 3:  group[size].SortBySurname(group, size); break; 
+				case 4:  group[size].SortByName(group, size); break; 
 					ZEROCHOICE
 				}
 				break;
@@ -223,13 +252,41 @@ int main()
 					int ID;
 					ID = Entervalue("\nenter ID", INT16_MAX);
 					group[0].SearchByID(group, size, ID); break;
-					ZEROCHOICE
+					
 				}
 				break;
 
 			//STATS
 			case 9: group[0].Stats(group, size); break;
-				ZEROCHOICE
+
+			//DORMITORY
+			case 10: 
+				do
+				{
+					editchoice = Menu(5);
+					switch (editchoice) {
+					case 1: group[size].SettleInfo(group, size); break;
+					case 2: dormhouse.Show(); break;
+					case 3: rnum = Entervalue("How many rooms to build?", INT16_MAX);
+						dormhouse.Build(rnum); break;
+					
+						//cout << "\n3 - Build new rooms";
+					case 4: dormhouse.SettleAll(group, size); break;
+						//cout << "\n4 - Re-settle one-by-one";
+						//cout << "\n5 - Re-settle randomly";
+						//cout << "\n6 - Re-settle using gender segregation
+					case 6: dormhouse.SettleByGender(group, size); break;
+						// cout << "\n7 - Show info for each room"
+					case 7: dormhouse.ShowRoom(); break;
+						//cout << "\n8 - Evict all students";
+					case 8: dormhouse.EvictAll(); 
+						for (int i = 0; i < size; i++)
+							group[i].SetRoom(0);
+						break;
+						//cout << "\n0 - Exit\n";
+						ZEROCHOICE
+					}
+				} while (editchoice != 0);
 			}
 		} while (choice);
 	}
