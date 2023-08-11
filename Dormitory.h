@@ -27,10 +27,12 @@ public:
 	void Build(int num);
 	void SettleAll(Student* students, int size);
 	void SettleByGender(Student* students, int size);
+	void SettleManually(Student* students, int size, int index);
 	//void SetRoomNumber(int num);
 	void Evict(int id);
 	void EvictAll();
 	int Settled();
+	void SetAdress();
 
 
 

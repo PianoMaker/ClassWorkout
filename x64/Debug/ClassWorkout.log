@@ -1,4 +1,14 @@
-﻿  main.cpp
-H:\source\ClassWorkout\ClassWorkout\main.cpp(85,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-H:\source\ClassWorkout\ClassWorkout\main.cpp(268,23): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+﻿  Student.cpp
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(261,53): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(262,59): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(263,49): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(264,70): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(321,3): warning C4244: 'argument': conversion from 'double' to 'std::streamsize', possible loss of data
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(331,3): warning C4244: 'argument': conversion from 'double' to 'std::streamsize', possible loss of data
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(340,3): warning C4244: 'argument': conversion from 'double' to 'std::streamsize', possible loss of data
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(381,17): warning C4101: 'choice': unreferenced local variable
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(481,4): warning C4244: 'argument': conversion from 'double' to 'std::streamsize', possible loss of data
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(495,4): warning C4244: 'argument': conversion from 'double' to 'std::streamsize', possible loss of data
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(510,4): warning C4244: 'argument': conversion from 'double' to 'std::streamsize', possible loss of data
+H:\source\ClassWorkout\ClassWorkout\Student.cpp(524,4): warning C4244: 'argument': conversion from 'double' to 'std::streamsize', possible loss of data
   ClassWorkout.vcxproj -> H:\source\ClassWorkout\x64\Debug\ClassWorkout.exe

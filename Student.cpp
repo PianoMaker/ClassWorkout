@@ -88,9 +88,11 @@ Student::Student(const Student& obj)// копіювання
 }
 Student::~Student()// деструктор
 {
-	//delete[] c_prog; // ALARM!!! глюкає при сортуванні !!!
-	//delete[] hardware;
-	//delete[] uml;
+	/*
+	delete[] c_prog; // ALARM!!! глюкає при сортуванні !!!
+	delete[] hardware;
+	delete[] uml;
+	/**/
 }
 /*
 */
@@ -101,6 +103,21 @@ void Student::SetName(char* name, char* surname)
 {
 	strcpy(this->name, name);
 	strcpy(this->surname, surname);
+}
+
+
+void Student::SetGender()
+{
+	char buff;
+	cout << "\nEnter gender. (m - male, f - female, 0 - skip this step)\n";
+	do
+	{
+		cin >> buff;
+		if (buff == '0') break;
+		else if (buff != 'm' && buff != 'f')
+			cout << "We accept only two genders. Try once more";
+	} while (buff != 'm' && buff != 'f');
+	if (buff != '0') gender = buff;
 }
 
 // виставлення нових оцінок по кожному з предметів
@@ -193,6 +210,13 @@ float Student::Getuml() { return ave_uml; }
 float Student::GetAveMarks() { return ave_global; }
 int Student::Getroom() { return room; }
 int Student::GetID() { return ID; }
+int Student::IDtoIndex(Student* students, int size, int id)
+{
+	for (int i = 0; i < size; i++)
+		if (students[i].ID == id) return i;
+	Message(12, "no student found");
+	return -1;
+}
 
 // сеттери
 void Student::SetID(int id) { ID = id; }
@@ -275,8 +299,8 @@ void Student::Show(int index) // для одного студента
 {
 	HEADER;
 	CountAverage();
-	cout << setw(150) << setfill('_') << " \n";
-	cout << "1\t" << setfill(' ')
+	cout << setw(140) << setfill('_') << "\n";
+	cout << setfill(' ') << "1\t"
 		<< setw(2) << ID << "\t"
 		<< setw(12) << name << "\t\t"
 		<< setw(12) << surname << "\t\t"
@@ -292,7 +316,7 @@ void Student::Show(int index) // для одного студента
 void Student::Show(const Student* students, int size)//для групи студентів
 {
 	HEADER;
-	cout << setw(120) << setfill('_') << " \n";
+	cout << setw(120) << setfill('_') << "\n" << setfill(' ');
 	for (int i = 0; i < size; i++)
 		ROWS
 
@@ -308,14 +332,15 @@ void Student::Show(const Student* students, int size, int ID_min, int ID_max)//�
 
 }
 
-void Student::SettleInfo(const Student* students, int size)
+void Student::ShowSettleInfo(const Student* students, int size)
 {
 	cout << "#\tID\tName\t\tSurname\t\tGender\tFaculty\t\tAdm.Year\tRoom#\n";
-	cout << setw(80) << setfill('_') << " \n";
+	cout << setw(80) << setfill('_') << "\n" << setfill(' ');
 	for (int i = 0; i < size; i++)
 		SETTLE;
 
 }
+
 
 
 /* створення екземплярів з випадковими параметрами */
@@ -380,19 +405,6 @@ void Student::Edit(int index)
 //для групи студентів
 
 
-void Student::SetGender()
-{
-	char buff;
-	cout << "\nEnter gender. (m - male, f - female, 0 - skip this step)\n";
-	do
-	{
-		cin >> buff;
-		if (buff == '0') break;
-		else if (buff != 'm' && buff != 'f')
-			cout << "We accept only two genders. Try once more";
-	} while (buff != 'm' && buff != 'f');
-	if (buff != '0') gender = buff;
-}
 
 // очищення оцінок
 
@@ -456,41 +468,6 @@ void Student::SwapStudents(Student* students, int index1, int index2) {
 	students[index2] = temp;
 }
 
-void Student::Sort(Student*& students, int size)
-{
-	for (int j = 0; j < size; j++)
-	{
-		for (int i = 1; i < size; i++)
-			if (students[i - 1].ave_global < students[i].ave_global)
-				swap(students[i - 1], students[i]);
-		//Show(students, size); /*For test*/
-		//Sleep(1000);
-	}
-}
-
-void Student::SortByID(Student*& students, int size)
-{
-	for (int j = 0; j < size; j++)
-		for (int i = 1; i < size; i++)
-			if (students[i - 1].ID > students[i].ID)
-				SwapStudents(students, i - 1, i);
-}
-
-void Student::SortBySurname(Student*& students, int size)
-{
-	for (int j = 0; j < size; j++)
-		for (int i = 1; i < size; i++)
-			if (strcmp(students[i - 1].surname, students[i].surname) > 0)
-				SwapStudents(students, i - 1, i);
-}
-
-void Student::SortByName(Student*& students, int size)
-{
-	for (int j = 0; j < size; j++)
-		for (int i = 1; i < size; i++)
-			if (strcmp(students[i - 1].name, students[i].name) > 0)
-				SwapStudents(students, i - 1, i);
-}
 
 
 void Student::SearchByName(Student* students, int size, char* name)
@@ -551,6 +528,41 @@ void Student::SearchByRoom(Student* students, int size, int room)
 }
 
 
+void Student::Sort(Student*& students, int size)
+{
+	for (int j = 0; j < size; j++)
+	{
+		for (int i = 1; i < size; i++)
+			if (students[i - 1].ave_global < students[i].ave_global)
+				SwapStudents(students, i - 1, i);
+		//Show(students, size); /*For test*/
+		//Sleep(1000);
+	}
+}
+
+void Student::SortByID(Student*& students, int size)
+{
+	for (int j = 0; j < size; j++)
+		for (int i = 1; i < size; i++)
+			if (students[i - 1].ID > students[i].ID)
+				SwapStudents(students, i - 1, i);
+}
+
+void Student::SortBySurname(Student*& students, int size)
+{
+	for (int j = 0; j < size; j++)
+		for (int i = 1; i < size; i++)
+			if (strcmp(students[i - 1].surname, students[i].surname) > 0)
+				SwapStudents(students, i - 1, i);
+}
+
+void Student::SortByName(Student*& students, int size)
+{
+	for (int j = 0; j < size; j++)
+		for (int i = 1; i < size; i++)
+			if (strcmp(students[i - 1].name, students[i].name) > 0)
+				SwapStudents(students, i - 1, i);
+}
 
 void Student::Stats(Student*& students, int size)
 {

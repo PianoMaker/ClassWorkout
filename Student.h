@@ -55,6 +55,7 @@ public:
 	void SetID(int id);
 	void SetRoom(int room);
 	char GetGender();
+	int IDtoIndex(Student* students, int size, int id);
 
 
 	/* редактор */
@@ -78,7 +79,7 @@ public:
 	void Show(const Student* students, int size); // показати весь список
 	void Show(const Student* students, int size, int ID_min, int ID_max); // показати діапазон в заданих межах
 	void ShowMarks(int index = 0);
-	void SettleInfo(const Student* students, int size);
+	void ShowSettleInfo(const Student* students, int size);
 
 	/* створення екземплярів з випадковими параметрами */
 

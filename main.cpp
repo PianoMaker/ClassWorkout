@@ -60,10 +60,11 @@ int Menu(int type)
 		cout << "\n2 - Show dormitories info";
 		cout << "\n3 - Build new rooms";
 		cout << "\n4 - Settle all";
-		//cout << "\n5 - Re-settle randomly";
+		cout << "\n5 - Settle manually";
 		cout << "\n6 - Settle all using gender segregation";
 		cout << "\n7 - Show info for each room";
 		cout << "\n8 - Evict all students";
+		cout << "\n9 - Set an address";
 		cout << "\n0 - Exit\n";
 	}
 	else Message(12, "Error in choosing type");
@@ -133,7 +134,7 @@ int main()
 
 		do
 		{
-			int index, min, max, amount, id;
+			int index, min, max, amount, id, counter=0;
 			choice = Menu(2); // вибір меню
 			switch (choice)
 			{
@@ -212,7 +213,7 @@ int main()
 					group[0].Add(group, size);
 				break;
 			//DELETE
-			case 5: editchoice = Entervalue("Choose mode. \n1- Delete by #\n2 - Delete by index\n3 - Delete unsuccessful students \n4 - Delete all students\n0 - exit",3, 0);
+			case 5: editchoice = Entervalue("Choose mode. \n1- Delete by #\n2 - Delete by ID\n3 - Delete unsuccessful students \n4 - Delete all students\n0 - exit",3, 0);
 				switch (editchoice)
 				{
 				case 1: index = Entervalue("Enter Student's # you wnat to delete", size); index--;
@@ -226,11 +227,13 @@ int main()
 					{
 						if(group[i].GetAveMarks()<amount)
 						{
-							cout << "\ni = " << i << "ave=" << group[i].GetAveMarks();
+							counter++;
 							group[i].Delete(group, size, i);
 							dormhouse.Evict(i);						
 						}
-					}break;
+					}
+					cout << counter << " students have been deleted\n";
+					break;
 				case 4:
 					for (int i = 0; i < size; i++)
 					{
@@ -288,16 +291,18 @@ int main()
 				{
 					editchoice = Menu(5);
 					switch (editchoice) {
-					case 1: group[size].SettleInfo(group, size); break;
+					case 1: group[size].ShowSettleInfo(group, size); break;
 					case 2: dormhouse.Show(); break;
 					case 3: amount = Entervalue("How many rooms to build?", INT16_MAX, 0);
 						dormhouse.Build(amount); break;
 					
 						//cout << "\n3 - Build new rooms";
 					case 4: dormhouse.SettleAll(group, size); break;
-						//cout << "\n4 - Re-settle one-by-one";
-						//cout << "\n5 - Re-settle randomly";
-						//cout << "\n6 - Re-settle using gender segregation
+						//cout << "\n4 - Settle one-by-one";
+						//cout << "\n5 - Settle manually";
+					case 5: index = Entervalue("Enter student's ID", size); 
+						 dormhouse.SettleManually(group, size, index); break;
+						//cout << "\n6 - Settle using gender segregation
 					case 6: dormhouse.SettleByGender(group, size); break;
 						// cout << "\n7 - Show info for each room"
 					case 7: dormhouse.ShowRoom(); break;
@@ -305,6 +310,8 @@ int main()
 					case 8: dormhouse.EvictAll(); 
 						for (int i = 0; i < size; i++)
 							group[i].SetRoom(0);
+						break;
+					case 9: dormhouse.SetAdress();
 						break;
 						//cout << "\n0 - Exit\n";
 						ZEROCHOICE
