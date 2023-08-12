@@ -35,6 +35,9 @@ Student::Student(): lessons(0)
 	strcpy(name, "Unknown");
 	strcpy(surname, "Unknown");
 	strcpy(faculty, "Unknown");
+	c_prog = new int[lessons];
+	hardware = new int[lessons];
+	uml = new int[lessons];
 	gender = '?';
 	admission_year = 2023;
 	CountAverage();
@@ -74,6 +77,9 @@ Student::Student(const Student& obj)// копіювання
 	strcpy(this->faculty, obj.faculty);
 	this->gender = obj.gender;
 	this->admission_year = obj.admission_year;
+	this->c_prog = new int[lessons];
+	this->hardware = new int[lessons];
+	this->uml = new int[lessons];
 	for (int i = 0; i < lessons; i++)
 	{
 		this->c_prog[i] = obj.c_prog[i];
@@ -86,10 +92,12 @@ Student::Student(const Student& obj)// копіювання
 	this->ave_global = obj.ave_global;
 	this->room = obj.room;
 }
+
 Student::~Student()// деструктор
 {
-	/*
-	delete[] c_prog; // ALARM!!! глюкає при сортуванні !!!
+	// ALARM!!! глюкає при сортуванні (sort by marks), або при перегляді оцінок (explore all marks) якщо не створити динамічні списки в конструкторі за замовченням !!!
+
+	delete[] c_prog; 
 	delete[] hardware;
 	delete[] uml;
 	/**/
@@ -272,24 +280,23 @@ void Student::CountAverage() // рахує середнє з округленн�
 
 void Student::ShowMarks(int index) // для одного студента
 {
-	CountAverage();
 	cout << "\nStudent " << name << " " << surname << " has got the following marks:";
 	cout << "\n   C++ programming:\t";
 	for (int i = 0; i < lessons; i++)
 	{
-		cout << right << setw(2) << c_prog[i] << " ";
+		cout << right << setw(3) << c_prog[i] << " ";
 	}
 	cout << "\t Average: " << ave_prog;
 	cout << "\n\t  Hardware: \t";
 	for (int i = 0; i < lessons; i++)
 	{
-		cout << right << setw(2) << hardware[i] << " ";
+		cout << right << setw(3) << hardware[i] << " ";
 	}
 	cout << "\t Average: " << ave_hardware;
 	cout << "\n\t\tUML: \t";
 	for (int i = 0; i < lessons; i++)
 	{
-		cout << right << setw(2) << uml[i] << " ";
+		cout << right << setw(3) << uml[i] << " ";
 	}
 	cout << "\t Average: " << ave_uml;
 }
@@ -442,8 +449,6 @@ void Student::Delete(Student*& students, int& size, int index)
 	for (int i = 0; i < size - 1; i++)
 	IDCounter--;// запобігання зростанню ID. Костильне програмування, але нічого іншого не виходить!!!
 
-	
-
 	for (int i = 0; i < index; i++)
 	{
 		temp[i] = students[i];
@@ -455,10 +460,11 @@ void Student::Delete(Student*& students, int& size, int index)
 	}
 
 
-	//delete[] students; // Видалення спричиняє помилку. ЧОМУ????
+	delete[] students; // Видалення спричиняє помилку. ЧОМУ????
 	students = temp;   
 	size--; 
 }
+
 
 
 
@@ -466,6 +472,7 @@ void Student::SwapStudents(Student* students, int index1, int index2) {
 	Student temp = students[index1];
 	students[index1] = students[index2];
 	students[index2] = temp;
+	temp.~Student();
 }
 
 
@@ -534,11 +541,12 @@ void Student::Sort(Student*& students, int size)
 	{
 		for (int i = 1; i < size; i++)
 			if (students[i - 1].ave_global < students[i].ave_global)
-				SwapStudents(students, i - 1, i);
+				SwapStudents(students, i - 1, i); // ALARM!!!
 		//Show(students, size); /*For test*/
 		//Sleep(1000);
 	}
 }
+
 
 void Student::SortByID(Student*& students, int size)
 {

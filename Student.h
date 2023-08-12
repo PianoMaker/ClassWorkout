@@ -8,24 +8,30 @@ class Student
 {
 private:
 	int ID; // ідентифікатор
-	int lessons; // пройдені уроки за які виставляються оцінки
+	int lessons; // кількість уроків, за які виставляються оцінки
 	char name[30];
 	char surname[30];
 	char gender;
 	char faculty[30];
 	int admission_year;
-	int* c_prog = new int[lessons]; // оцінки за кожен урок
-	int* hardware = new int[lessons];
-	int* uml = new int[lessons];
+	int* c_prog = new int(lessons); // оцінки за кожен урок
+	int* hardware = new int(lessons);
+	int* uml = new int(lessons);
+	/* ALARM!!! Дає глюк при сортуванні!!! 
+	int* c_prog; 
+	int* hardware;
+	int* uml;
+	*/
 	float ave_prog; // середні оцінки
 	float ave_hardware;
 	float ave_uml;
 	float ave_global;
-	int room;
+	int room;// кімната в гуртожитку "Dormitory"
 
 public:
-	
-	Student(); // конструктор за замовченням
+	// конструктор за замовченням
+	Student(); 
+
 	// конструктор з усіма параметрами
 	Student(int lessons, char* name, char* surname, char* faculty, int admission_year, int* c_prog, int* hardware, int* uml);
 /*
@@ -35,10 +41,6 @@ public:
 	~Student();// деструктор;                         
 	/*
 	*/ 
-
-	// іменний сеттер 
-	void SetName(char* name, char* surname);
-	void SetGender();
 
 
 	// геттери
@@ -52,34 +54,32 @@ public:
 	float Getuml();
 	int Getroom();
 	int GetID();
+	char GetGender();
+
+	// сеттери 
+	void SetName(char* name, char* surname);
+	void SetGender();
 	void SetID(int id);
 	void SetRoom(int room);
-	char GetGender();
-	int IDtoIndex(Student* students, int size, int id);
-
-
-	/* редактор */
-
-	void Edit(int index = 1);	//для одного студента
-
-	// виставлення нових оцінок по кожному з предметів
-
 	void SetMarks(int c_prog, int hardware, int uml);
-	void EditMarks(int index = 0);
+	void Fill(Student* students, int size);	// Інший варіант. Працює як мультисеттер 
+	
+	/* редактори */
 
+	void Edit(int index = 1);	//імена і ф-т
+	void EditMarks(int index = 0); 	// для нових оцінок по кожному з предметів
 
-
-	// Інший варіант. Працює як мультисеттер 
-	void Fill(Student* students, int size);
+	/* ID - індекс*/
+	int IDtoIndex(Student* students, int size, int id);//для операцій за ID
 
 
 	/* Виведення на екран */
 
 	void Show(int index = 0);// для моделі в один екземпляр
-	void Show(const Student* students, int size); // показати весь список
+	void Show(const Student* students, int size); // показати весь список 
 	void Show(const Student* students, int size, int ID_min, int ID_max); // показати діапазон в заданих межах
-	void ShowMarks(int index = 0);
-	void ShowSettleInfo(const Student* students, int size);
+	void ShowMarks(int index = 0); // детально відображає всі оцінки
+	void ShowSettleInfo(const Student* students, int size); // показує розселення в гуртожитку
 
 	/* створення екземплярів з випадковими параметрами */
 
