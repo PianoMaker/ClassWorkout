@@ -14,14 +14,15 @@ private:
 	char gender;
 	char faculty[30];
 	int admission_year;
+	/*
 	int* c_prog = new int(lessons); // оцінки за кожен урок
 	int* hardware = new int(lessons);
 	int* uml = new int(lessons);
-	/* ALARM!!! Дає глюк при сортуванні!!! 
+	*/
 	int* c_prog; 
 	int* hardware;
 	int* uml;
-	*/
+
 	float ave_prog; // середні оцінки
 	float ave_hardware;
 	float ave_uml;
@@ -31,18 +32,10 @@ private:
 public:
 	// конструктор за замовченням
 	Student(); 
-
-	// конструктор з усіма параметрами
-	Student(int lessons, char* name, char* surname, char* faculty, int admission_year, int* c_prog, int* hardware, int* uml);
-/*
-  //ALARM!!! При включеному конструкторі-копіювання + деструктор збивається алгоритм сортування!!!.
-  */
 	Student(const Student& obj);// копіювання  
-	~Student();// деструктор;                         
-	/*
-	*/ 
-
-
+	~Student();// деструктор;  
+	Student& operator=(const Student& obj);
+		
 	// геттери
 	char* GetName();
 	char* GetSurname();
@@ -86,6 +79,7 @@ public:
 	void RandSurnames();
 	void RandNames();
 	void RandFaculty();
+	void RandMarks();
 
 	// Статистика 
 	void CountAverage();
@@ -94,9 +88,9 @@ public:
 	// Сортування
 	void Sort(Student*& students, int size);
 	void SortByID(Student*& students, int size);
-	void SwapStudents(Student* students, int index1, int index2);
 	void SortBySurname(Student*& students, int size);
 	void SortByName(Student*& students, int size);
+	friend void swap(Student& first, Student& second);
 
 	// очищення оцінок
 	void ResetMarks();

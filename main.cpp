@@ -201,7 +201,7 @@ int main()
 						if (!strcmp(group[i].GetSurname(), "Unknown"))group[i].RandSurnames();
 						if (!strcmp(group[i].GetName(), "Unknown"))group[i].RandNames();
 						if (!strcmp(group[i].GetFaculty(), "Unknown"))group[i].RandFaculty();
-						group[i].SetMarks(rand() % bestmark + 1, rand() % bestmark + 1, rand() % bestmark + 1); 
+						group[i].RandMarks();
 					}
 					break;
 					ZEROCHOICE
@@ -221,7 +221,12 @@ int main()
 				case 2: id = Entervalue("Enter Student's ID you wnat to delete", size);
 					dormhouse.Evict(id);
 					for (int i = 0; i < size; i++)
-						if (group[i].GetID() == id)group[i].Delete(group, size, i); break;
+						if (group[i].GetID() == id) 
+						{ 
+							group[i].Delete(group, size, i); 
+							break; 
+						}
+					break;
 				case 3: amount = Entervalue("Enter the worse average mark allowable", 12, 1);
 					for (int i = 0; i < size; i++)
 					{

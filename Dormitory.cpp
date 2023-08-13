@@ -13,7 +13,7 @@
 	{ Message(12, "You have no rooms buit yet. Try to build rooms before!"); return; }
 
 
-// Constructor to initialize the number of numberofrooms and allocate memory
+// Constructor to initialize the number of rooms and allocate memory
 
 Dormitory::Dormitory() : numberofrooms(0)
 {
@@ -114,7 +114,6 @@ void Dormitory::SettleAll(Student *students, int size)
 		{
 			if (room[i].settler[j].GetID()) continue;
 			while (students[id].Getroom() && id<size) id++;
-			if(id<size)
 			{
 				students[id].SetRoom(i + 1);
 				room[i].settler[j] = students[id];

@@ -29,7 +29,7 @@ using namespace std;
 
 
 
-Student::Student(): lessons(0)
+Student::Student() : lessons(0)
 {
 	ID = ++IDCounter;
 	strcpy(name, "Unknown");
@@ -44,30 +44,6 @@ Student::Student(): lessons(0)
 	room = 0;
 }
 
-// конструктор з усіма параметрами
-Student::Student(int lessons, char* name, char* surname, char* faculty, int admission_year, int* c_prog, int* hardware, int* uml)
-{
-	//ID = ++IDCounter;
-	this->lessons = lessons;
-	strcpy(this->name, name);
-	strcpy(this->surname, surname);
-	strcpy(this->faculty, faculty);
-	this->admission_year = admission_year;
-	for (int i = 0; i < lessons; i++)
-	{
-		this->c_prog[i] = c_prog[i];
-		this->hardware[i] = hardware[i];
-		this->uml[i] = uml[i];
-	}
-	ave_prog = Average(c_prog, lessons);
-	ave_hardware = Average(hardware, lessons);
-	ave_uml = Average(uml, lessons);
-	ave_global = (ave_uml + ave_hardware + ave_prog) / 3;
-}
-/*
-* 
-*   //Цікавинка. За відсутнього копіювання середніх значень алгоритм сортування збивається
-*/
 Student::Student(const Student& obj)// копіювання
 {
 	this->ID = obj.ID;
@@ -93,11 +69,37 @@ Student::Student(const Student& obj)// копіювання
 	this->room = obj.room;
 }
 
+Student& Student::operator= (const Student& obj)
+{
+	this->ID = obj.ID;
+	this->lessons = obj.lessons;
+	strcpy(this->name, obj.name);
+	strcpy(this->surname, obj.surname);
+	strcpy(this->faculty, obj.faculty);
+	this->gender = obj.gender;
+	this->admission_year = obj.admission_year;
+	this->c_prog = new int[lessons];
+	this->hardware = new int[lessons];
+	this->uml = new int[lessons];
+	for (int i = 0; i < lessons; i++)
+	{
+		this->c_prog[i] = obj.c_prog[i];
+		this->hardware[i] = obj.hardware[i];
+		this->uml[i] = obj.uml[i];
+	}
+	this->ave_hardware = obj.ave_hardware;
+	this->ave_prog = obj.ave_prog;
+	this->ave_uml = obj.ave_uml;
+	this->ave_global = obj.ave_global;
+	this->room = obj.room;
+	return *this;
+};
+
 Student::~Student()// деструктор
 {
 	// ALARM!!! глюкає при сортуванні (sort by marks), або при перегляді оцінок (explore all marks) якщо не створити динамічні списки в конструкторі за замовченням !!!
 
-	delete[] c_prog; 
+	delete[] c_prog;
 	delete[] hardware;
 	delete[] uml;
 	/**/
@@ -257,7 +259,7 @@ void Student::Fill(Student* students, int size)
 
 void Student::CountAverage() // рахує середнє з округленням до 0,1
 {
-	if (lessons == 0)
+	if (!lessons)
 	{
 		ave_prog = 0;
 		ave_hardware = 0;
@@ -363,12 +365,12 @@ void Student::RandSurnames()
 void Student::RandNames()
 {
 	int const numberofnames = 26;
-	char name[numberofnames][10] = { "Ivan", "Dmytro", "Petro", "Pavlo", "Mykola", "Volodymyr", "Danylo", "Stepan", "Fedir", "Andriy", "Maxym", /*11*/ "Oksana", "Ivanka", "Olena", "Kateryna", "Olha", "Karina", "Myroslava", "Anna", "Orysia", "Nadia", "Natalie", "Alina", "Sofia", "Ella", "Alla"};
+	char name[numberofnames][10] = { "Ivan", "Dmytro", "Petro", "Pavlo", "Mykola", "Volodymyr", "Danylo", "Stepan", "Fedir", "Andriy", "Maxym", /*11*/ "Oksana", "Ivanka", "Olena", "Kateryna", "Olha", "Karina", "Myroslava", "Anna", "Orysia", "Nadia", "Natalie", "Alina", "Sofia", "Ella", "Alla" };
 	int random = rand() % numberofnames;
 	strcpy(this->name, name[random]);
 	if (random < 11) gender = 'm';
-	
-	else gender = 'f';	
+
+	else gender = 'f';
 }
 
 void Student::RandFaculty()
@@ -379,7 +381,10 @@ void Student::RandFaculty()
 
 }
 
-
+void Student::RandMarks()
+{
+	SetMarks(rand() % bestmark + 1, rand() % bestmark + 1, rand() % bestmark + 1);
+}
 /* редактор */
 //для одного студента
 
@@ -404,7 +409,7 @@ void Student::Edit(int index)
 		if (strcmp(buff, "0")) admission_year = atoi(buff);
 
 		SetGender();
-		
+
 		Show(index);
 		oncemore = ToDoOrNotToDo("edit more");
 	} while (oncemore);
@@ -438,41 +443,31 @@ void Student::Add(Student*& students, int& size)
 	temp[size] = Student();
 
 	//delete[] students; // Видалення попереднього масиву спричиняє помилку. ЧОМУ???
-	students = temp;   
-	size++;            
+	students = temp;
+	size++;
 }
+
 
 void Student::Delete(Student*& students, int& size, int index)
 {
-	
+
 	Student* temp = new Student[size - 1];
 	for (int i = 0; i < size - 1; i++)
-	IDCounter--;// запобігання зростанню ID. Костильне програмування, але нічого іншого не виходить!!!
+		IDCounter--;// запобігання зростанню ID. Костильне програмування, але нічого іншого не виходить!!!
 
 	for (int i = 0; i < index; i++)
 	{
 		temp[i] = students[i];
 	}
 
-	for (int i = index + 1; i < size; i++) 
+	for (int i = index + 1; i < size; i++)
 	{
 		temp[i - 1] = students[i];
 	}
 
-
-	delete[] students; // Видалення спричиняє помилку. ЧОМУ????
-	students = temp;   
-	size--; 
-}
-
-
-
-
-void Student::SwapStudents(Student* students, int index1, int index2) {
-	Student temp = students[index1];
-	students[index1] = students[index2];
-	students[index2] = temp;
-	temp.~Student();
+	delete[] students;
+	students = temp;
+	size--;
 }
 
 
@@ -534,6 +529,23 @@ void Student::SearchByRoom(Student* students, int size, int room)
 	if (!found) Message(12, "\nnothing found");
 }
 
+void swap(Student& first, Student& second)
+{
+	swap(first.lessons, second.lessons);
+	swap(first.admission_year, second.admission_year);
+	swap(first.ave_global, second.ave_global);
+	swap(first.ave_prog, second.ave_prog);
+	swap(first.ave_uml, second.ave_uml);
+	swap(first.c_prog, second.c_prog);
+	swap(first.uml, second.uml);
+	swap(first.hardware, second.hardware);
+	swap(first.faculty, second.faculty);
+	swap(first.name, second.name);
+	swap(first.surname, second.surname);
+	swap(first.gender, second.gender);
+	swap(first.room, second.room);
+	swap(first.ID, second.ID);
+}
 
 void Student::Sort(Student*& students, int size)
 {
@@ -541,7 +553,7 @@ void Student::Sort(Student*& students, int size)
 	{
 		for (int i = 1; i < size; i++)
 			if (students[i - 1].ave_global < students[i].ave_global)
-				SwapStudents(students, i - 1, i); // ALARM!!!
+				swap(students[i - 1], students[i]); // ALARM!!!
 		//Show(students, size); /*For test*/
 		//Sleep(1000);
 	}
@@ -553,7 +565,7 @@ void Student::SortByID(Student*& students, int size)
 	for (int j = 0; j < size; j++)
 		for (int i = 1; i < size; i++)
 			if (students[i - 1].ID > students[i].ID)
-				SwapStudents(students, i - 1, i);
+				swap(students[i - 1], students[i]);
 }
 
 void Student::SortBySurname(Student*& students, int size)
@@ -561,7 +573,7 @@ void Student::SortBySurname(Student*& students, int size)
 	for (int j = 0; j < size; j++)
 		for (int i = 1; i < size; i++)
 			if (strcmp(students[i - 1].surname, students[i].surname) > 0)
-				SwapStudents(students, i - 1, i);
+				swap(students[i - 1], students[i]);
 }
 
 void Student::SortByName(Student*& students, int size)
@@ -569,12 +581,12 @@ void Student::SortByName(Student*& students, int size)
 	for (int j = 0; j < size; j++)
 		for (int i = 1; i < size; i++)
 			if (strcmp(students[i - 1].name, students[i].name) > 0)
-				SwapStudents(students, i - 1, i);
+				swap(students[i - 1], students[i]);
 }
 
 void Student::Stats(Student*& students, int size)
 {
-	
+
 	int females = 0, males = 0, unknown = 0;
 	int devops = 0, sysadmins = 0, unknownfac = 0;
 	float fmarks = 0, mmarks = 0, devopsmarks = 0, sysadmmarks = 0;
@@ -594,8 +606,8 @@ void Student::Stats(Student*& students, int size)
 			males++; mmarks += students[i].ave_global;
 		}
 		else unknown++;
-		if (!strcmp(students[i].GetFaculty(), "Devops")) 
-		{ 
+		if (!strcmp(students[i].GetFaculty(), "Devops"))
+		{
 			devops++; devopsmarks += students[i].ave_global;
 		}
 		else if (!strcmp(students[i].GetFaculty(), "Sysadmin"))
@@ -609,7 +621,7 @@ void Student::Stats(Student*& students, int size)
 	cout << "\nCurrent students - " << size;
 	cout << "\nSettled in dormitory - " << settled;
 	cout << "\nnot settled - " << size - settled;
-	
+
 	Message(11, "\n===============Statstics by gender ===========\n");
 	cout << "\nMales - " << males;
 	cout << "\nFemales - " << females;
@@ -626,13 +638,3 @@ void Student::Stats(Student*& students, int size)
 	cout << "\nAverage sysadmin marks - " << sysadmmarks / sysadmins << endl;
 
 }
-
-
-
-
-
-
-
-
-
-
